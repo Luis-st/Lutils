@@ -1,0 +1,69 @@
+/*
+ * LUtils
+ * Copyright (C) 2025 Luis Staudt
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package net.luis.utils.io.data.yaml;
+
+import net.luis.utils.io.data.yaml.exception.YamlAnchorException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
+/**
+ *
+ * @author Luis-St
+ *
+ */
+
+public class YamlNull extends AbstractYamlNode {
+	
+	public static final YamlNull INSTANCE = new YamlNull();
+	
+	public YamlNull() {}
+	
+	@Override
+	public boolean hasAnchor() {
+		return super.hasAnchor() && this != INSTANCE;
+	}
+	
+	@Override
+	public @Nullable String getAnchor() {
+		return this == INSTANCE ? null : super.getAnchor();
+	}
+	
+	@Override
+	public void setAnchor(@Nullable String anchor) {
+		if (this == INSTANCE) {
+			throw new YamlAnchorException("Unable to set anchor on yaml null instance, create a new instance instead");
+		}
+		super.setAnchor(anchor);
+	}
+	
+	//region Object overrides
+	@Override
+	public String toString() {
+		return this.toString(YamlConfig.DEFAULT);
+	}
+	
+	@Override
+	public @NotNull String toString(@NotNull YamlConfig config) {
+		Objects.requireNonNull(config, "Config must not be null");
+		return this.getBaseString(config) + (config.useNullLiteral() ? "null" : "~");
+	}
+	//endregion
+}
