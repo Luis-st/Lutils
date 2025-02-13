@@ -34,12 +34,12 @@ public class YamlStructure extends AbstractYamlNode implements YamlNode {
 	
 	private final String key;
 	private final YamlNode node;
-	private final boolean isAnchorOnly;
+	private final boolean anchorDefined;
 	
 	public YamlStructure(@NotNull String key, @NotNull String anchor) {
 		this.key = Objects.requireNonNull(key, "Key must not be null");
 		this.node = new YamlScalar(Objects.requireNonNull(anchor, "Anchor must not be null"));
-		this.isAnchorOnly = true;
+		this.anchorDefined = true;
 	}
 	
 	public YamlStructure(@NotNull String key, @NotNull YamlNode node) {
@@ -48,21 +48,24 @@ public class YamlStructure extends AbstractYamlNode implements YamlNode {
 		if (this.node instanceof YamlStructure) {
 			throw new YamlTypeException("Node must not be a yaml structure");
 		}
-		this.isAnchorOnly = false;
+		this.anchorDefined = false;
 	}
 	
 	@Override
 	public boolean hasAnchor() {
-		return this.node.hasAnchor();
+		return !this.anchorDefined && this.node.hasAnchor();
 	}
 	
 	@Override
 	public @Nullable String getAnchor() {
-		return this.node.getAnchor();
+		return this.anchorDefined ? null : this.node.getAnchor();
 	}
 	
 	@Override
 	public void setAnchor(@Nullable String anchor) {
+		if (this.anchorDefined) {
+			throw new YamlTypeException("Defining an anchor on a node where the value is defined by an anchor is not allowed");
+		}
 		this.node.setAnchor(anchor);
 	}
 	
@@ -70,8 +73,12 @@ public class YamlStructure extends AbstractYamlNode implements YamlNode {
 		return this.key;
 	}
 	
+	public boolean isAnchorDefined() {
+		return this.anchorDefined;
+	}
+	
 	public @NotNull YamlNode getNode() {
-		if (this.isAnchorOnly) {
+		if (this.anchorDefined) {
 			throw new YamlTypeException("Structure does only contain an anchor");
 		}
 		return this.node;
@@ -80,15 +87,16 @@ public class YamlStructure extends AbstractYamlNode implements YamlNode {
 	//region Object overrides
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof YamlStructure yamlStructure)) return false;
+		if (!(o instanceof YamlStructure that)) return false;
 		
-		if (!this.key.equals(yamlStructure.key)) return false;
-		return this.node.equals(yamlStructure.node);
+		if (this.anchorDefined != that.anchorDefined) return false;
+		if (!this.key.equals(that.key)) return false;
+		return this.node.equals(that.node);
 	}
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.key, this.node);
+		return Objects.hash(this.key, this.node, this.anchorDefined);
 	}
 	
 	@Override
@@ -106,7 +114,7 @@ public class YamlStructure extends AbstractYamlNode implements YamlNode {
 			base += " ";
 		}
 		String node = this.node.toString(config);
-		if (this.isAnchorOnly) {
+		if (this.anchorDefined) {
 			YamlScalar scalar = this.node.getAsYamlScalar();
 			if (scalar.hasAnchor()) {
 				base += "&" + scalar.getAnchor() + " ";
