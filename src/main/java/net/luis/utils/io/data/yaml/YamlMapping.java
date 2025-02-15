@@ -38,9 +38,9 @@ public class YamlMapping extends AbstractYamlNode {
 	
 	public YamlMapping() {}
 	
-	public YamlMapping(@NotNull List<YamlStructure> structures) {
-		Objects.requireNonNull(structures, "Yaml structures must not be null");
-		structures.forEach(this::add);
+	public YamlMapping(@NotNull List<YamlStruct> structs) {
+		Objects.requireNonNull(structs, "yaml structs must not be null");
+		structs.forEach(this::add);
 	}
 	
 	public YamlMapping(@NotNull Map<String, ? extends YamlNode> nodes) {
@@ -67,7 +67,7 @@ public class YamlMapping extends AbstractYamlNode {
 		this.anchors.clear();
 	}
 	
-	public @NotNull Set<String> getAnchors() {
+	public @NotNull @Unmodifiable Set<String> getAnchors() {
 		return Set.copyOf(this.anchors);
 	}
 	//endregion
@@ -112,9 +112,9 @@ public class YamlMapping extends AbstractYamlNode {
 		return this.nodes.put(key, node == null ? YamlNull.INSTANCE : node);
 	}
 	
-	public @Nullable YamlNode add(@NotNull YamlStructure pair) {
-		Objects.requireNonNull(pair, "Pair must not be null");
-		return this.add(pair.getKey(), pair.getNode());
+	public @Nullable YamlNode add(@NotNull YamlStruct struct) {
+		Objects.requireNonNull(struct, "Struct must not be null");
+		return this.add(struct.getKey(), struct.getNode());
 	}
 	
 	public @Nullable YamlNode add(@NotNull String key, @Nullable String value) {
@@ -157,14 +157,14 @@ public class YamlMapping extends AbstractYamlNode {
 		this.nodes.putAll(Objects.requireNonNull(mapping, "Yaml mapping must not be null").nodes);
 	}
 	
-	public void addAll(YamlStructure @NotNull ... structures) {
-		Objects.requireNonNull(structures, "Yaml structures must not be null");
-		this.addAll(Arrays.asList(structures));
+	public void addAll(YamlStruct @NotNull ... structs) {
+		Objects.requireNonNull(structs, "yaml structs must not be null");
+		this.addAll(Arrays.asList(structs));
 	}
 	
-	public void addAll(@NotNull List<YamlStructure> structures) {
-		Objects.requireNonNull(structures, "Yaml structures must not be null");
-		structures.forEach(this::add);
+	public void addAll(@NotNull List<YamlStruct> structs) {
+		Objects.requireNonNull(structs, "yaml structs must not be null");
+		structs.forEach(this::add);
 	}
 	
 	public void addAll(@NotNull Map<String, ? extends YamlNode> nodes) {
@@ -186,9 +186,9 @@ public class YamlMapping extends AbstractYamlNode {
 	//region Replace operations
 	public @Nullable YamlNode replace(@NotNull String key, @Nullable YamlNode newNode) {
 		Objects.requireNonNull(key, "Key must not be null");
-		if (newNode instanceof YamlStructure pair) {
-			key = pair.getKey();
-			newNode = pair.getNode();
+		if (newNode instanceof YamlStruct struct) {
+			key = struct.getKey();
+			newNode = struct.getNode();
 		}
 		return this.nodes.replace(key, newNode == null ? YamlNull.INSTANCE : newNode);
 	}
@@ -196,9 +196,9 @@ public class YamlMapping extends AbstractYamlNode {
 	public boolean replace(@NotNull String key, @NotNull YamlNode oldNode, @Nullable YamlNode newNode) {
 		Objects.requireNonNull(key, "Key must not be null");
 		Objects.requireNonNull(oldNode, "Old node must not be null");
-		if (newNode instanceof YamlStructure pair) {
-			key = pair.getKey();
-			newNode = pair.getNode();
+		if (newNode instanceof YamlStruct struct) {
+			key = struct.getKey();
+			newNode = struct.getNode();
 		}
 		return this.nodes.replace(key, oldNode, newNode == null ? YamlNull.INSTANCE : newNode);
 	}

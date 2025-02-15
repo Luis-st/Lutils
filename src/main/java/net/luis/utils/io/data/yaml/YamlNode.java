@@ -61,36 +61,36 @@ public interface YamlNode {
 		return this instanceof YamlScalar;
 	}
 	
-	default boolean isYamlStructure() {
-		return this instanceof YamlStructure;
+	default boolean isYamlStruct() {
+		return this instanceof YamlStruct;
 	}
 	
 	default @NotNull YamlMapping getAsYamlMapping() {
 		if (this instanceof YamlMapping mapping) {
 			return mapping;
 		}
-		throw new IllegalStateException("Expected a yaml mapping, but got a " + this.getName());
+		throw new YamlTypeException("Expected a yaml mapping, but got a " + this.getName());
 	}
 	
 	default @NotNull YamlSequence getAsYamlSequence() {
 		if (this instanceof YamlSequence sequence) {
 			return sequence;
 		}
-		throw new IllegalStateException("Expected a yaml sequence, but got a " + this.getName());
+		throw new YamlTypeException("Expected a yaml sequence, but got a " + this.getName());
 	}
 	
 	default @NotNull YamlScalar getAsYamlScalar() {
 		if (this instanceof YamlScalar scalar) {
 			return scalar;
 		}
-		throw new IllegalStateException("Expected a yaml scalar, but got a " + this.getName());
+		throw new YamlTypeException("Expected a yaml scalar, but got a " + this.getName());
 	}
 	
-	default @NotNull YamlStructure getAsYamlStructure() {
-		if (this instanceof YamlStructure structure) {
-			return structure;
+	default @NotNull YamlStruct getAsYamlStruct() {
+		if (this instanceof YamlStruct struct) {
+			return struct;
 		}
-		throw new IllegalStateException("Expected a yaml structure, but got a " + this.getName());
+		throw new YamlTypeException("Expected a yaml struct, but got a " + this.getName());
 	}
 	
 	@NotNull String toString(@NotNull YamlConfig config);

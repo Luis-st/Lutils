@@ -62,7 +62,7 @@ public class YamlSequence extends AbstractYamlNode implements Iterable<YamlNode>
 		this.anchors.clear();
 	}
 	
-	public @NotNull Set<String> getAnchors() {
+	public @NotNull @Unmodifiable Set<String> getAnchors() {
 		return Set.copyOf(this.anchors);
 	}
 	//endregion
@@ -102,8 +102,8 @@ public class YamlSequence extends AbstractYamlNode implements Iterable<YamlNode>
 		if (index >= this.size()) {
 			throw new YamlSequenceIndexOutOfBoundsException(index, this.size());
 		}
-		if (node instanceof YamlStructure) {
-			throw new YamlTypeException("Incompatible node type, expected scalar, sequence, or mapping, but found pair");
+		if (node instanceof YamlStruct) {
+			throw new YamlTypeException("Incompatible node type, expected scalar, sequence, or mapping, but found struct");
 		}
 		return this.nodes.set(index, node == null ? YamlNull.INSTANCE : node);
 	}
@@ -147,8 +147,8 @@ public class YamlSequence extends AbstractYamlNode implements Iterable<YamlNode>
 	
 	//region Add operations
 	public void add(@Nullable YamlNode node) {
-		if (node instanceof YamlStructure) {
-			throw new YamlTypeException("Incompatible node type, expected scalar, sequence, or mapping, but found pair");
+		if (node instanceof YamlStruct) {
+			throw new YamlTypeException("Incompatible node type, expected scalar, sequence, or mapping, but found struct");
 		}
 		this.nodes.add(node == null ? YamlNull.INSTANCE : node);
 	}

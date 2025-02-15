@@ -30,23 +30,23 @@ import java.util.Objects;
  *
  */
 
-public class YamlStructure extends AbstractYamlNode implements YamlNode {
+public class YamlStruct extends AbstractYamlNode implements YamlNode {
 	
 	private final String key;
 	private final YamlNode node;
 	private final boolean anchorDefined;
 	
-	public YamlStructure(@NotNull String key, @NotNull String anchor) {
+	public YamlStruct(@NotNull String key, @NotNull String anchor) {
 		this.key = Objects.requireNonNull(key, "Key must not be null");
 		this.node = new YamlScalar(Objects.requireNonNull(anchor, "Anchor must not be null"));
 		this.anchorDefined = true;
 	}
 	
-	public YamlStructure(@NotNull String key, @NotNull YamlNode node) {
+	public YamlStruct(@NotNull String key, @NotNull YamlNode node) {
 		this.key = Objects.requireNonNull(key, "Key must not be null");
 		this.node = Objects.requireNonNull(node, "Node must not be null");
-		if (this.node instanceof YamlStructure) {
-			throw new YamlTypeException("Node must not be a yaml structure");
+		if (this.node instanceof YamlStruct) {
+			throw new YamlTypeException("Node must not be a yaml struct");
 		}
 		this.anchorDefined = false;
 	}
@@ -79,15 +79,22 @@ public class YamlStructure extends AbstractYamlNode implements YamlNode {
 	
 	public @NotNull YamlNode getNode() {
 		if (this.anchorDefined) {
-			throw new YamlTypeException("Structure does only contain an anchor");
+			throw new YamlTypeException("Struct does only contain an anchor");
 		}
 		return this.node;
+	}
+	
+	public @NotNull String getAnchorReference() {
+		if (!this.anchorDefined) {
+			throw new YamlTypeException("Struct is not defined by an anchor");
+		}
+		return this.node.getAsYamlScalar().getAsString();
 	}
 	
 	//region Object overrides
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof YamlStructure that)) return false;
+		if (!(o instanceof YamlStruct that)) return false;
 		
 		if (this.anchorDefined != that.anchorDefined) return false;
 		if (!this.key.equals(that.key)) return false;
