@@ -283,6 +283,7 @@ public class YamlMapping extends AbstractYamlNode {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof YamlMapping that)) return false;
+		if (!super.equals(o)) return false;
 		
 		if (!this.nodes.equals(that.nodes)) return false;
 		return this.anchors.equals(that.anchors);
@@ -290,7 +291,7 @@ public class YamlMapping extends AbstractYamlNode {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.nodes, this.anchors);
+		return Objects.hash(super.hashCode(), this.nodes, this.anchors);
 	}
 	
 	@Override

@@ -300,6 +300,7 @@ public class YamlSequence extends AbstractYamlNode implements Iterable<YamlNode>
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof YamlSequence yamlNodes)) return false;
+		if (!super.equals(o)) return false;
 		
 		if (!this.nodes.equals(yamlNodes.nodes)) return false;
 		return this.anchors.equals(yamlNodes.anchors);
@@ -307,7 +308,7 @@ public class YamlSequence extends AbstractYamlNode implements Iterable<YamlNode>
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.nodes, this.anchors);
+		return Objects.hash(super.hashCode(), this.nodes, this.anchors);
 	}
 	
 	@Override

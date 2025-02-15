@@ -18,8 +18,12 @@
 
 package net.luis.utils.io.data.yaml;
 
+import net.luis.utils.io.data.yaml.exception.YamlTypeException;
 import net.luis.utils.lang.StringUtils;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 /**
  *
@@ -91,6 +95,14 @@ public interface YamlNode {
 			return struct;
 		}
 		throw new YamlTypeException("Expected a yaml struct, but got a " + this.getName());
+	}
+	
+	default @NotNull YamlStruct createStruct(@NotNull String key) {
+		Objects.requireNonNull(key, "Key must not be null");
+		if (this instanceof YamlStruct) {
+			throw new YamlTypeException("Cannot create a struct from a struct");
+		}
+		return new YamlStruct(key, this);
 	}
 	
 	@NotNull String toString(@NotNull YamlConfig config);

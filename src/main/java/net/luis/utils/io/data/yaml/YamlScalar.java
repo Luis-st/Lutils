@@ -84,6 +84,19 @@ public class YamlScalar extends AbstractYamlNode implements ValueGetter {
 	
 	//region Object overrides
 	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof YamlScalar scalar)) return false;
+		if (!super.equals(o)) return false;
+		
+		return this.value.equals(scalar.value);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), this.value);
+	}
+	
+	@Override
 	public String toString() {
 		return this.toString(YamlConfig.DEFAULT);
 	}

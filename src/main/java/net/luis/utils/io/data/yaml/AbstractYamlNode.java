@@ -52,4 +52,18 @@ public abstract class AbstractYamlNode implements YamlNode {
 		Objects.requireNonNull(config, "Config must not be null");
 		return this.hasAnchor() ? "&" + this.anchor : "";
 	}
+	
+	//region Object overrides
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof AbstractYamlNode that)) return false;
+		
+		return Objects.equals(this.anchor, that.anchor);
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0;
+	}
+	//endregion
 }
